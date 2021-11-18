@@ -1,4 +1,4 @@
-# Continuous non-invasice blood pressure monitoring
+# Continuous non-invasive blood pressure monitoring
 
 ### Components used
 
