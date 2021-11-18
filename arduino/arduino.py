@@ -8,7 +8,7 @@ baud = 115200  # arduino uno runs at 115200 baud
 
 # take datetime now in ISO 8061 format and make that the filename
 now = datetime.datetime.now()
-file_name = now.strftime("%Y-%m-%d-%H-%M-%S") + "PPG_ONLY.csv"
+file_name = now.strftime("%Y-%m-%d-%H-%M-%S") + "PPG_ONLY_CLIP.csv"
 
 # Path for the data file
 data_folder = Path("data/raw/")
