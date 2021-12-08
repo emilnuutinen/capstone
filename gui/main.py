@@ -187,7 +187,7 @@ def p5_update():
         curve = curves5[-1]
     data5[i+1, 0] = now - startTime
     data5[i+1, 1] = np.random.normal()
-    curve.setData(x=data5[:i+2, 0], y=data3[:i+2, 1])
+    curve.setData(x=data5[:i+2, 0], y=data5[:i+2, 1])
     ptr5 += 1
 
 
@@ -211,7 +211,7 @@ def p6_update():
         curve = curves6[-1]
     data6[i+1, 0] = now - startTime
     data6[i+1, 1] = np.random.normal()
-    curve.setData(x=data6[:i+2, 0], y=data3[:i+2, 1])
+    curve.setData(x=data6[:i+2, 0], y=data6[:i+2, 1])
     ptr6 += 1
 
 
@@ -235,7 +235,7 @@ def p7_update():
         curve = curves7[-1]
     data7[i+1, 0] = now - startTime
     data7[i+1, 1] = np.random.normal()
-    curve.setData(x=data7[:i+2, 0], y=data3[:i+2, 1])
+    curve.setData(x=data7[:i+2, 0], y=data7[:i+2, 1])
     ptr7 += 1
 
 
