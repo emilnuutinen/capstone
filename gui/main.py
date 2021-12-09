@@ -1,252 +1,202 @@
 from pyqtgraph.Qt import QtGui, QtCore
+import serial
+import re
 import numpy as np
 import pyqtgraph as pg
+from time import sleep
+
+# serial port of Arduino ("COM5" in Windows)
+arduino_port = "/dev/cu.SLAB_USBtoUART"
+baud = 115200  # arduino uno runs at 115200 baud
+
+ser = serial.Serial(arduino_port, baud)
+print("Connected to Arduino port:" + arduino_port)
 
 app = QtGui.QApplication([])
 
 win = pg.GraphicsLayoutWidget(show=True, title="Blood Pressure Monitor")
-win.resize(1920, 1080)
+win.resize(1240, 860)
 win.setWindowTitle('Blood Pressure Monitor')
 
 # Enable antialiasing for prettier plots
 pg.setConfigOptions(antialias=True)
 
-chunkSize = 100
-maxChunks = 10
-startTime = pg.ptime.time()
-
 p1 = win.addPlot(title="ECG")
-p1.setLabel('bottom', 'Time', 's')
-p1.setXRange(-10, 0)
-curves1 = []
-data1 = np.empty((chunkSize+1, 2))
+# Use automatic downsampling and clipping to reduce the drawing load
+p1.setDownsampling(mode='peak')
+p1.setClipToView(True)
+p1.setRange(xRange=[-100, 0])
+p1.setLimits(xMax=0)
+curve1 = p1.plot()
+data1 = np.empty(100)
 ptr1 = 0
 
 win.nextRow()
 
+
 p2 = win.addPlot(title="PPG 1 Infrared")
-p2.setLabel('bottom', 'Time', 's')
-p2.setXRange(-10, 0)
-curves2 = []
-data2 = np.empty((chunkSize+1, 2))
+# Use automatic downsampling and clipping to reduce the drawing load
+p2.setDownsampling(mode='peak')
+p2.setClipToView(True)
+p2.setRange(xRange=[-100, 0])
+p2.setLimits(xMax=0)
+curve2 = p2.plot()
+data2 = np.empty(100)
 ptr2 = 0
 
 p3 = win.addPlot(title="PPG 2 Infrared")
-p3.setLabel('bottom', 'Time', 's')
-p3.setXRange(-10, 0)
-curves3 = []
-data3 = np.empty((chunkSize+1, 2))
+# Use automatic downsampling and clipping to reduce the drawing load
+p3.setDownsampling(mode='peak')
+p3.setClipToView(True)
+p3.setRange(xRange=[-100, 0])
+p3.setLimits(xMax=0)
+curve3 = p3.plot()
+data3 = np.empty(100)
 ptr3 = 0
 
 win.nextRow()
 
 p4 = win.addPlot(title="PPG 1 Red")
-p4.setLabel('bottom', 'Time', 's')
-p4.setXRange(-10, 0)
-curves4 = []
-data4 = np.empty((chunkSize+1, 2))
+# Use automatic downsampling and clipping to reduce the drawing load
+p4.setDownsampling(mode='peak')
+p4.setClipToView(True)
+p4.setRange(xRange=[-100, 0])
+p4.setLimits(xMax=0)
+curve4 = p4.plot()
+data4 = np.empty(100)
 ptr4 = 0
 
 p5 = win.addPlot(title="PPG 2 Red")
-p5.setLabel('bottom', 'Time', 's')
-p5.setXRange(-10, 0)
-curves5 = []
-data5 = np.empty((chunkSize+1, 2))
+# Use automatic downsampling and clipping to reduce the drawing load
+p5.setDownsampling(mode='peak')
+p5.setClipToView(True)
+p5.setRange(xRange=[-100, 0])
+p5.setLimits(xMax=0)
+curve5 = p5.plot()
+data5 = np.empty(100)
 ptr5 = 0
 
 win.nextRow()
 
 p6 = win.addPlot(title="PPG 1 Green")
-p6.setLabel('bottom', 'Time', 's')
-p6.setXRange(-10, 0)
-curves6 = []
-data6 = np.empty((chunkSize+1, 2))
+# Use automatic downsampling and clipping to reduce the drawing load
+p6.setDownsampling(mode='peak')
+p6.setClipToView(True)
+p6.setRange(xRange=[-100, 0])
+p6.setLimits(xMax=0)
+curve6 = p6.plot()
+data6 = np.empty(100)
 ptr6 = 0
 
 p7 = win.addPlot(title="PPG 2 Green")
-p7.setLabel('bottom', 'Time', 's')
-p7.setXRange(-10, 0)
-curves7 = []
-data7 = np.empty((chunkSize+1, 2))
+# Use automatic downsampling and clipping to reduce the drawing load
+p7.setDownsampling(mode='peak')
+p7.setClipToView(True)
+p7.setRange(xRange=[-100, 0])
+p7.setLimits(xMax=0)
+curve7 = p7.plot()
+data7 = np.empty(100)
 ptr7 = 0
 
 
-def p1_update():
-    global p1, data1, ptr1, curves1
-    now = pg.ptime.time()
-    for c in curves1:
-        c.setPos(-(now-startTime), 0)
-
-    i = ptr1 % chunkSize
-    if i == 0:
-        curve = p1.plot()
-        curves1.append(curve)
-        last = data1[-1]
-        data1 = np.empty((chunkSize+1, 2))
-        data1[0] = last
-        while len(curves1) > maxChunks:
-            c = curves1.pop(0)
-            p1.removeItem(c)
-    else:
-        curve = curves1[-1]
-    data1[i+1, 0] = now - startTime
-    data1[i+1, 1] = np.random.normal()
-    curve.setData(x=data1[:i+2, 0], y=data1[:i+2, 1])
+def p1_update(ecg):
+    global data1, ptr1
+    data1[ptr1] = ecg
     ptr1 += 1
+    if ptr1 >= data1.shape[0]:
+        tmp = data1
+        data1 = np.empty(data1.shape[0] * 2)
+        data1[:tmp.shape[0]] = tmp
+    curve1.setData(data1[:ptr1])
+    curve1.setPos(-ptr1, 0)
 
 
-def p2_update():
-    global p2, data2, ptr2, curves2
-    now = pg.ptime.time()
-    for c in curves2:
-        c.setPos(-(now-startTime), 0)
-
-    i = ptr2 % chunkSize
-    if i == 0:
-        curve = p2.plot()
-        curves2.append(curve)
-        last = data2[-1]
-        data2 = np.empty((chunkSize+1, 2))
-        data2[0] = last
-        while len(curves2) > maxChunks:
-            c = curves2.pop(0)
-            p2.removeItem(c)
-    else:
-        curve = curves2[-1]
-    data2[i+1, 0] = now - startTime
-    data2[i+1, 1] = np.random.normal()
-    curve.setData(x=data2[:i+2, 0], y=data2[:i+2, 1])
+def p2_update(ppg1_ir):
+    global data2, ptr2
+    data2[ptr2] = ppg1_ir
     ptr2 += 1
+    if ptr2 >= data2.shape[0]:
+        tmp = data2
+        data2 = np.empty(data2.shape[0] * 2)
+        data2[:tmp.shape[0]] = tmp
+    curve2.setData(data2[:ptr2])
+    curve2.setPos(-ptr2, 0)
 
 
-def p3_update():
-    global p3, data3, ptr3, curves3
-    now = pg.ptime.time()
-    for c in curves3:
-        c.setPos(-(now-startTime), 0)
-
-    i = ptr3 % chunkSize
-    if i == 0:
-        curve = p3.plot()
-        curves3.append(curve)
-        last = data3[-1]
-        data3 = np.empty((chunkSize+1, 2))
-        data3[0] = last
-        while len(curves3) > maxChunks:
-            c = curves3.pop(0)
-            p3.removeItem(c)
-    else:
-        curve = curves3[-1]
-    data3[i+1, 0] = now - startTime
-    data3[i+1, 1] = np.random.normal()
-    curve.setData(x=data3[:i+2, 0], y=data3[:i+2, 1])
+def p3_update(ppg2_ir):
+    global data3, ptr3
+    data3[ptr3] = ppg2_ir
     ptr3 += 1
+    if ptr3 >= data3.shape[0]:
+        tmp = data3
+        data3 = np.empty(data3.shape[0] * 2)
+        data3[:tmp.shape[0]] = tmp
+    curve3.setData(data3[:ptr3])
+    curve3.setPos(-ptr3, 0)
 
 
-def p4_update():
-    global p4, data4, ptr4, curves4
-    now = pg.ptime.time()
-    for c in curves4:
-        c.setPos(-(now-startTime), 0)
-
-    i = ptr4 % chunkSize
-    if i == 0:
-        curve = p4.plot()
-        curves4.append(curve)
-        last = data4[-1]
-        data4 = np.empty((chunkSize+1, 2))
-        data4[0] = last
-        while len(curves4) > maxChunks:
-            c = curves4.pop(0)
-            p4.removeItem(c)
-    else:
-        curve = curves4[-1]
-    data4[i+1, 0] = now - startTime
-    data4[i+1, 1] = np.random.normal()
-    curve.setData(x=data4[:i+2, 0], y=data4[:i+2, 1])
+def p4_update(ppg1_red):
+    global data4, ptr4
+    data4[ptr4] = ppg1_red
     ptr4 += 1
+    if ptr4 >= data4.shape[0]:
+        tmp = data4
+        data4 = np.empty(data4.shape[0] * 2)
+        data4[:tmp.shape[0]] = tmp
+    curve4.setData(data4[:ptr4])
+    curve4.setPos(-ptr4, 0)
 
 
-def p5_update():
-    global p5, data5, ptr5, curves5
-    now = pg.ptime.time()
-    for c in curves5:
-        c.setPos(-(now-startTime), 0)
-
-    i = ptr5 % chunkSize
-    if i == 0:
-        curve = p5.plot()
-        curves5.append(curve)
-        last = data5[-1]
-        data5 = np.empty((chunkSize+1, 2))
-        data5[0] = last
-        while len(curves5) > maxChunks:
-            c = curves5.pop(0)
-            p5.removeItem(c)
-    else:
-        curve = curves5[-1]
-    data5[i+1, 0] = now - startTime
-    data5[i+1, 1] = np.random.normal()
-    curve.setData(x=data5[:i+2, 0], y=data5[:i+2, 1])
+def p5_update(ppg2_red):
+    global data5, ptr5
+    data5[ptr5] = ppg2_red
     ptr5 += 1
+    if ptr5 >= data5.shape[0]:
+        tmp = data5
+        data5 = np.empty(data5.shape[0] * 2)
+        data5[:tmp.shape[0]] = tmp
+    curve5.setData(data5[:ptr5])
+    curve5.setPos(-ptr5, 0)
 
 
-def p6_update():
-    global p6, data6, ptr6, curves6
-    now = pg.ptime.time()
-    for c in curves6:
-        c.setPos(-(now-startTime), 0)
-
-    i = ptr6 % chunkSize
-    if i == 0:
-        curve = p6.plot()
-        curves6.append(curve)
-        last = data6[-1]
-        data6 = np.empty((chunkSize+1, 2))
-        data6[0] = last
-        while len(curves6) > maxChunks:
-            c = curves6.pop(0)
-            p6.removeItem(c)
-    else:
-        curve = curves6[-1]
-    data6[i+1, 0] = now - startTime
-    data6[i+1, 1] = np.random.normal()
-    curve.setData(x=data6[:i+2, 0], y=data6[:i+2, 1])
+def p6_update(ppg1_green):
+    global data6, ptr6
+    data6[ptr6] = ppg1_green
     ptr6 += 1
+    if ptr6 >= data6.shape[0]:
+        tmp = data6
+        data6 = np.empty(data6.shape[0] * 2)
+        data6[:tmp.shape[0]] = tmp
+    curve6.setData(data6[:ptr6])
+    curve6.setPos(-ptr6, 0)
 
 
-def p7_update():
-    global p7, data7, ptr7, curves7
-    now = pg.ptime.time()
-    for c in curves7:
-        c.setPos(-(now-startTime), 0)
-
-    i = ptr7 % chunkSize
-    if i == 0:
-        curve = p7.plot()
-        curves7.append(curve)
-        last = data7[-1]
-        data7 = np.empty((chunkSize+1, 2))
-        data7[0] = last
-        while len(curves7) > maxChunks:
-            c = curves7.pop(0)
-            p7.removeItem(c)
-    else:
-        curve = curves7[-1]
-    data7[i+1, 0] = now - startTime
-    data7[i+1, 1] = np.random.normal()
-    curve.setData(x=data7[:i+2, 0], y=data7[:i+2, 1])
+def p7_update(ppg2_green):
+    global data7, ptr7
+    data7[ptr7] = ppg2_green
     ptr7 += 1
+    if ptr7 >= data7.shape[0]:
+        tmp = data7
+        data7 = np.empty(data7.shape[0] * 2)
+        data7[:tmp.shape[0]] = tmp
+    curve7.setData(data7[:ptr7])
+    curve7.setPos(-ptr7, 0)
 
 
 def update():
-    p1_update()
-    p2_update()
-    p3_update()
-    p4_update()
-    p5_update()
-    p6_update()
-    p7_update()
+    get_data = str(ser.readline())
+    data = re.sub('[brn\'\\\]', '', get_data)
+    if any(character.isalpha() for character in data):
+        pass
+    else:
+        arr = [int(x.strip()) for x in data.split(',')]
+        p1_update(arr[1])
+        p2_update(arr[3])
+        p3_update(arr[7])
+        p4_update(arr[4])
+        p5_update(arr[8])
+        p6_update(arr[5])
+        p7_update(arr[9])
 
 
 timer = pg.QtCore.QTimer()
