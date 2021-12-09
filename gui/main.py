@@ -201,7 +201,7 @@ def update():
 
 timer = pg.QtCore.QTimer()
 timer.timeout.connect(update)
-timer.start(30)
+timer.start(10)
 
 
 # Start Qt event loop unless running in interactive mode or using pyside.
