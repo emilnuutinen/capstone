@@ -20,5 +20,16 @@ You can also install everything with pip:
 pip install pyqtgraph pyserial numpy 
 ```
 
+After installation you can run the data collecting script with:
+
+```
+python arduino/arduino.py
+```
+
+You can also start the real time monitor GUI with:
+
+```
+python gui/main.py
+```
 
 
