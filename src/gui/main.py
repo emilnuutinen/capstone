@@ -3,14 +3,13 @@ import serial
 import re
 import numpy as np
 import pyqtgraph as pg
-from time import sleep
 
-# serial port of Arduino ("COM5" in Windows)
-arduino_port = "/dev/cu.SLAB_USBtoUART"
-baud = 115200  # arduino uno runs at 115200 baud
+# serial port of ESP32 ("COM5" in Windows)
+port = "/dev/cu.SLAB_USBtoUART"
+baud = 115200  # ESP32 uno runs at 115200 baud
 
-ser = serial.Serial(arduino_port, baud)
-print("Connected to Arduino port:" + arduino_port)
+ser = serial.Serial(port, baud)
+print("Connected to ESP32 port:" + port)
 
 app = QtGui.QApplication([])
 

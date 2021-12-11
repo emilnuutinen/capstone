@@ -4,13 +4,13 @@ import re
 import platform
 from pathlib import Path
 
-# serial port of Arduino
+# serial port of ESP32
 port = "COM5" if platform.system() == "Windows" else "/dev/cu.SLAB_USBtoUART"
-baud = 115200  # Arduino runs at 115200 baud
+baud = 115200  # ESP32 runs at 115200 baud
 
-# connect to Arduino
+# connect to ESP32
 ser = serial.Serial(port, baud)
-print("Connected toArduino port:" + port)
+print("Connected to ESP32 port:" + port)
 
 # take datetime now in ISO 8061 format and make that the filename
 now = datetime.datetime.now()
@@ -31,7 +31,7 @@ while line < samples:
     data = re.sub('[brn\'\\\]', '', get_data)
     print(data)
 
-    # ignore information printed in the first lines from the Arduino
+    # ignore information printed in the first lines from the ESP32
     if any(character.isalpha() for character in data):
         pass
     else:
