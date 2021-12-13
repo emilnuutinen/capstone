@@ -1,11 +1,12 @@
 from pyqtgraph.Qt import QtGui, QtCore
 import serial
 import re
+import platform
 import numpy as np
 import pyqtgraph as pg
 
 # serial port of ESP32 ("COM5" in Windows)
-port = "/dev/cu.SLAB_USBtoUART"
+port = "COM5" if platform.system() == "Windows" else "/dev/cu.SLAB_USBtoUART"
 baud = 115200  # ESP32 uno runs at 115200 baud
 
 ser = serial.Serial(port, baud)
