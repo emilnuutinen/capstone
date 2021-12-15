@@ -3,6 +3,7 @@ import datetime
 import re
 import platform
 from pathlib import Path
+import time
 
 # serial port of ESP32
 port = "COM5" if platform.system() == "Windows" else "/dev/cu.SLAB_USBtoUART"
@@ -23,7 +24,10 @@ file_path = data_folder / file_name
 samples = 100  # how many samples to collect
 line = 0
 
-while line < samples:
+t_end = time.time() + 10  # Set the loop length in seconds
+
+# while line < samples:
+while time.time() < t_end:
 
     get_data = str(ser.readline())
 
@@ -38,7 +42,7 @@ while line < samples:
         file = open(file_path, "a")
         # ecg_time, ecg, ppg1_time, ppg1_ir, ppg1_red, ppg1_green, ppg2_time, ppg2_ir, ppg2_red, ppg2_green
         file.write(data + "\n")
-        line += 1
+        #line += 1
 
 print("Finished")
 file.close()
