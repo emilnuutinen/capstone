@@ -16,9 +16,6 @@ TwoWire i2c2 = TwoWire(1);
 MAX30105 ppg1;
 MAX30105 ppg2;
 
-// Sampling frequency.
-const int fs = 100;
-
 unsigned long currentTime;
 unsigned long sampleTime;
 int ecg;
@@ -40,63 +37,36 @@ void setup() {
 
   // Initialize I2C.
   i2c1.begin(sda1Pin, scl1Pin);
-  i2c2.begin(sda2Pin, scl2Pin);
+//  i2c2.begin(sda2Pin, scl2Pin);
   
   // Initialize PPG1 sensor.
-  //Serial.print("Initializing PPG1...");
   if (!ppg1.begin(i2c1, I2C_SPEED_FAST))
   {
-    //Serial.println("PPG1 not found.");
+    Serial.println("PPG1 not found.");
     while (1);
   }
-  //Serial.println("PPG1 found.");
-
-  // Initialize PPG2 sensor.
-  //Serial.print("Initializing PPG2...");
-  if (!ppg2.begin(i2c2, I2C_SPEED_FAST))
-  {
-    //Serial.println("PPG2 not found.");
-    while (1);
-  }
-  //Serial.println("PPG2 found.");
 
   // Configure PPG1.
   ppg1.setup();
   // Turn the red LED off.
   ppg1.setPulseAmplitudeRed(0x00);
-  ppg1.setSampleRate(0x0C);
+  ppg1.setSampleRate(0x14);
   ppg1.setFIFOAverage(0x04);
 
-  // Configure PPG2.
-  ppg2.setup();
-  // Turn the red LED off.
-  ppg2.setPulseAmplitudeRed(0x00);
-  ppg2.setSampleRate(0x0C);
-  ppg2.setFIFOAverage(0x04);
-
-  sampleTime = millis() + 1000 / fs;
 }
 
 void loop() {
   currentTime = millis();
   if (currentTime >= sampleTime) {
-    sampleTime = currentTime + 1000 / fs;
+    sampleTime = currentTime + 5; // 200Hz sampling rate
+
+    // PPG1 readings.
+    ppg1Ir = ppg1.getIR();
+    ppg1Timestamp = millis();
 
     // ECG.
     ecg = analogRead(ecgPin);
     ecgTimestamp = millis();
-
-    // PPG1 readings.
-    ppg1Ir = ppg1.getIR();
-    ppg1Red = ppg1.getRed();
-    ppg1Green = ppg1.getGreen();
-    ppg1Timestamp = millis();
-
-    // PPG2 readings.
-    ppg2Ir = ppg2.getIR();
-    ppg2Red = ppg2.getRed();
-    ppg2Green = ppg2.getGreen();
-    ppg2Timestamp = millis();
 
     // Serial communication.
     Serial.print(ecgTimestamp);
@@ -105,18 +75,6 @@ void loop() {
     Serial.print(",");
     Serial.print(ppg1Timestamp);
     Serial.print(",");
-    Serial.print(ppg1Ir);
-    Serial.print(",");
-    Serial.print(ppg1Red);
-    Serial.print(",");
-    Serial.print(ppg1Green);
-    Serial.print(",");
-    Serial.print(ppg2Timestamp);
-    Serial.print(",");
-    Serial.print(ppg2Ir);
-    Serial.print(",");
-    Serial.print(ppg2Red);
-    Serial.print(",");
-    Serial.println(ppg2Green);
+    Serial.println(ppg1Ir);
   }
 }
