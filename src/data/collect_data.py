@@ -24,7 +24,7 @@ file_path = data_folder / file_name
 samples = 100  # how many samples to collect
 line = 0
 
-t_end = time.time() + 10  # Set the loop length in seconds
+t_end = time.time() + 90  # Set the loop length in seconds
 
 # while line < samples:
 while time.time() < t_end:
@@ -40,7 +40,7 @@ while time.time() < t_end:
         pass
     else:
         file = open(file_path, "a")
-        # ecg_time, ecg, ppg1_time, ppg1_ir, ppg1_red, ppg1_green, ppg2_time, ppg2_ir, ppg2_red, ppg2_green
+        # ecg_time, ecg, ppg_time, ppg_green
         file.write(data + "\n")
         #line += 1
 
