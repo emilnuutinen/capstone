@@ -45,7 +45,7 @@ data2 = np.empty(1000)
 ptr2 = 0
 
 
-def p1_update(ecg, timeStamp):
+def p1_update(ecg):
     global data1, ptr1
     data1[ptr1] = ecg
     ptr1 += 1
@@ -55,10 +55,9 @@ def p1_update(ecg, timeStamp):
         data1[:tmp.shape[0]] = tmp
     curve1.setData(data1[:ptr1])
     curve1.setPos(-ptr1, 0)
-    p1.setLabel('bottom', timeStamp, units=None)
 
 
-def p2_update(ppg1_ir, timeStamp):
+def p2_update(ppg1_ir):
     global data2, ptr2
     data2[ptr2] = ppg1_ir
     ptr2 += 1
@@ -68,7 +67,6 @@ def p2_update(ppg1_ir, timeStamp):
         data2[:tmp.shape[0]] = tmp
     curve2.setData(data2[:ptr2])
     curve2.setPos(-ptr2, 0)
-    p2.setLabel('bottom',timeStamp, units=None)
 
 
 def update():
@@ -78,8 +76,8 @@ def update():
         pass
     else:
         arr = [int(x.strip()) for x in data.split(',')]
-        p1_update(arr[1], arr[0])
-        p2_update(arr[3], arr[2])
+        p1_update(arr[1])
+        p2_update(arr[3])
 
 
 timer = pg.QtCore.QTimer()
