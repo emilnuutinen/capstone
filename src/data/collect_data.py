@@ -21,9 +21,6 @@ file_name = now.strftime("%Y-%m-%d-%H-%M-%S") + ".csv"
 data_folder = Path("data/raw/")
 file_path = data_folder / file_name
 
-samples = 100  # how many samples to collect
-line = 0
-
 t_end = time.time() + 90  # Set the loop length in seconds
 
 # while line < samples:
