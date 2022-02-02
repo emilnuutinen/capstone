@@ -2,6 +2,7 @@ import serial
 import datetime
 import re
 import platform
+import os
 from pathlib import Path
 import time
 
@@ -18,10 +19,11 @@ now = datetime.datetime.now()
 file_name = now.strftime("%Y-%m-%d-%H-%M-%S") + ".csv"
 
 # path for the data file
-data_folder = Path("data/raw/")
+data_folder = Path("data/raw/" + now.strftime("%Y-%m-%d-%H-%M-%S")+ "/")
+os.mkdir(data_folder)
 file_path = data_folder / file_name
 
-t_end = time.time() + 90  # Set the loop length in seconds
+t_end = time.time() + 30  # Set the loop length in seconds
 
 # while line < samples:
 while time.time() < t_end:
