@@ -8,7 +8,7 @@
 
 ### Hardware configuration
 The hardware configuration is described with a diagram in the following location:
-https://github.com/emilnuutinen/capstone/blob/master/arduino/ptt-esp32/pinout-diagram.png
+github.com/emilnuutinen/capstone/blob/master/arduino/ptt-esp32/pinout-diagram.png
 
 ### Usage
 
