@@ -9,7 +9,7 @@
 ### Hardware configuration
 The hardware configuration is described with a diagram in the following location:
 
-[Pinout Diagram](https://github.com/emilnuutinen/capstone/blob/master/arduino/ptt-esp32/pinout-diagram.png)
+[Pinout Diagram](https://github.com/emilnuutinen/capstone/blob/master/arduino/ptt-esp32/pinout-diagram.jpg)
 
 ### Usage
 
