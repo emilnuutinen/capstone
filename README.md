@@ -15,6 +15,14 @@ The hardware configuration is described with a diagram in the following location
 The 3D-printed clip is used to connect the MAX30105 Particle and Pulse Ox Sensor(PPG) sensor:
 [3D-model](https://github.com/emilnuutinen/capstone/tree/master/3D-model)  
 
+### Data
+
+Files include data from different collection sessions.
+
+### Notebooks
+
+The required libraries are imported in each file. These are always presented first.
+
 ### Usage
 
 Install dependencies with Conda:
@@ -40,12 +48,3 @@ You can also start the real time monitor GUI with:
 ```
 python src/gui/main.py
 ```
-
-### Data
-
-Files include data from different collection sessions.
-
-### Notebooks
-
-The required libraries are imported in each file. These are always presented first.
-
