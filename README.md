@@ -13,6 +13,7 @@ The hardware configuration is described with a diagram in the following location
 
 ### 3D-model
 The 3D-printed clip is used to connect the MAX30105 Particle and Pulse Ox Sensor(PPG) sensor:
+
 [3D-model](https://github.com/emilnuutinen/capstone/tree/master/3D-model)  
 
 ### Data
