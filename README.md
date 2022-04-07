@@ -41,4 +41,11 @@ You can also start the real time monitor GUI with:
 python src/gui/main.py
 ```
 
+### Data
+
+Files include data from different collection sessions.
+
+### Notebooks
+
+The required libraries are imported in each file. These are always presented first.
 
