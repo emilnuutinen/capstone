@@ -21,7 +21,16 @@ Files include data from different collection sessions.
 
 ### Notebooks
 
-The required libraries for example in machine learning algorithms are imported into each file. These are always presented first.
+The required libraries:
+- matplotlib 
+- numpy
+- pandas
+- scipy
+- sklearn
+- biosppy.signals
+- neurokit2
+- xgboost
+Each file these requirments are always presented first.
 
 ### Usage
 
