@@ -21,7 +21,7 @@ Files include data from different collection sessions.
 
 ### Notebooks
 
-The required libraries are imported in each file. These are always presented first.
+The required libraries for example in machine learning algorithms are imported into each file. These are always presented first.
 
 ### Usage
 
