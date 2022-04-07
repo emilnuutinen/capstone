@@ -32,7 +32,7 @@ The required libraries:
 - neurokit2
 - xgboost
 
-Each file these requirments are always presented first.
+Each file requirments are always presented first.
 
 ### Usage
 
