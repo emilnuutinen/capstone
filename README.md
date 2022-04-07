@@ -11,6 +11,10 @@ The hardware configuration is described with a diagram in the following location
 
 [Pinout Diagram](https://github.com/emilnuutinen/capstone/blob/master/arduino/ptt-esp32/pinout-diagram.jpg)
 
+### 3D-model
+The 3D-printed clip is used to connect the MAX30105 Particle and Pulse Ox Sensor(PPG) sensor:
+[3D-model](https://github.com/emilnuutinen/capstone/blob/master/3D_clip.STL)  
+
 ### Usage
 
 Install dependencies with Conda:
